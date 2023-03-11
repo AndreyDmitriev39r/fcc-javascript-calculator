@@ -5,3 +5,17 @@
   margin: 0;
   padding: 0;
 }
+
+.App {
+  border: 1px solid black;
+  display: grid;  
+  grid-template-areas: 
+    "display display display display"
+    "seven eight nine zero"
+    "four five six zero"
+    "one two three zero";
+}
+
+#display {
+  grid-area: display;
+}
