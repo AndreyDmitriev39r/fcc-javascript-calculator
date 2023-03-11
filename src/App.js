@@ -1,6 +1,9 @@
 import Display from "./components/Display";
 import Digit from "./components/Digit";
 import Operator from "./components/Operator";
+import Clear from "./components/Clear";
+import Equals from "./components/Equals";
+import DecimalPoint from "./components/DecimalPoint";
 
 import { digits, operators } from "./data";
 
@@ -26,6 +29,21 @@ function App() {
       <Display />
       {digitsToRender}
       {operatorsToRender}
+      <Clear
+        id='clear'
+        value='C'
+        style={{gridArea: 'clear'}}
+      />
+      <DecimalPoint
+        id='decimal'
+        value='.'
+        style={{gridArea: 'decimal'}}
+      />
+      <Equals
+        id='equals'
+        value='='
+        style={{gridArea: 'equals'}}
+      />
     </div>
   );
 }
