@@ -1,7 +1,7 @@
 function Display() {
   return (
     <div id='display' className="display">
-      <h1>This is display</h1>
+      <h1>0</h1>
     </div>
   );
 }
