@@ -9,7 +9,10 @@ import DecimalPoint from "./components/DecimalPoint";
 
 import { digits, operators } from "./data";
 
-function App() {
+function App() { 
+
+  const operatorsLookup = {};
+  operators.forEach(operator => operatorsLookup[operator.id] = operator.operation);  
 
   // state
 
@@ -17,6 +20,7 @@ function App() {
     operandLeft: 0,
     operator: null,
     operandRight: null,
+    isDecimalPoint: false,
   };
 
   const [display, setDisplay] = useState(() => '0');
@@ -39,10 +43,37 @@ function App() {
         return prevDisplay + newInput;
       }
     });
+    setCalculation((prevCalculation) => {
+      //case no new operator chosen yet
+      if (!prevCalculation.operator) {        
+        return {
+          ...prevCalculation,
+          operandLeft: !prevCalculation.isDecimalPoint
+            ? Number(prevCalculation.operandLeft + newInput)
+            : Number(prevCalculation.operandLeft + "." + newInput),
+          isDecimalPoint: prevCalculation.isDecimalPoint
+            ? !prevCalculation.isDecimalPoint
+            : prevCalculation.isDecimalPoint
+        }
+      }      
+    });
   }
 
   const handleDecimalClick = () => {
-    setDisplay((prevDisplay) => prevDisplay.includes('.') ? prevDisplay : prevDisplay + '.');
+    if (!display.includes('.')) {
+      setDisplay((prevDisplay) => prevDisplay + '.');
+      setCalculation((prevCalculation) => {
+        //case no new operator chosen yet
+        if (!prevCalculation.operator) {        
+          return {...prevCalculation, isDecimalPoint: true}
+        }      
+      });
+    }   
+  };
+
+  const handleOperatorClick = (event) => {
+    console.log(event.target.id);
+    console.log(operatorsLookup[event.target.id]);
   }
 
   // rendering
@@ -62,6 +93,7 @@ function App() {
       id={operator.id}
       value={operator.value}
       style = {{gridArea: operator.id}}
+      clickHandler = {handleOperatorClick}
     />
   );
   return (

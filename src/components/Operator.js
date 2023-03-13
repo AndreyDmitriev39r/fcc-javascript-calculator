@@ -1,6 +1,11 @@
-function Operator({id, value, style}) {  
+function Operator({id, value, style, clickHandler}) {  
   return (
-    <button id={id} className="operator" style={{...style}}>
+    <button
+      id={id}
+      className="operator"
+      style={{...style}}
+      onClick={clickHandler}
+    >
       {value}
     </button>
   );

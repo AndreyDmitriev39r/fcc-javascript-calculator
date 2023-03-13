@@ -13,8 +13,8 @@ export const digits = [
 
  
 export const operators = [
-  {id: "divide", value: "/"},
-  {id: "multiply", value: "*"},
-  {id: "subtract", value: "-"},
-  {id: "add", value: "+"},
+  {id: "divide", value: "/", operation: (num1, num2) => num1 / num2},
+  {id: "multiply", value: "*", operation: (num1, num2) => num1 * num2},
+  {id: "subtract", value: "-", operation: (num1, num2) => num1 - num2},
+  {id: "add", value: "+", operation: (num1, num2) => num1 + num2},
 ];
