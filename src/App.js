@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Display from "./components/Display";
 import Digit from "./components/Digit";
 import Operator from "./components/Operator";
@@ -8,6 +10,19 @@ import DecimalPoint from "./components/DecimalPoint";
 import { digits, operators } from "./data";
 
 function App() {
+
+  // state
+
+  const [display, setDisplay] = useState(() => 0)
+
+  // eventHandlers
+
+  const handleClearClick = () => {
+    setDisplay(0);
+  }
+
+  // rendering
+
   const digitsToRender = digits.map(digit =>
     <Digit
       key={digit.id}
@@ -26,13 +41,16 @@ function App() {
   );
   return (
     <div className="App">
-      <Display />
+      <Display
+        value={display}
+      />
       {digitsToRender}
       {operatorsToRender}
       <Clear
         id='clear'
         value='C'
         style={{gridArea: 'clear'}}
+        clickHandler={handleClearClick}
       />
       <DecimalPoint
         id='decimal'
