@@ -13,21 +13,24 @@ function App() {
 
   // state
 
-  const [display, setDisplay] = useState(() => 0)
-
-  const [calculation, setCalculation] = useState(() => ({
+  const initialCalculationState = {
     operandLeft: 0,
     operator: null,
     operandRight: null,
-  }))
+  };
+
+  const [display, setDisplay] = useState(() => '0');
+
+  const [calculation, setCalculation] = useState(() => initialCalculationState);
 
   // eventHandlers
 
   const handleClearClick = () => {
     setDisplay(0);
-  }
+    setCalculation(initialCalculationState);
+  };
 
-  const handleNumberClick = (e) => {    
+  const handleDigitClick = (e) => {    
     const newInput = e.target.innerText;
     setDisplay((prevDisplay) => {
       if (prevDisplay == 0) {
@@ -37,6 +40,11 @@ function App() {
       }
     });
   }
+
+  const handleDecimalClick = () => {
+    setDisplay((prevDisplay) => prevDisplay.includes('.') ? prevDisplay : prevDisplay + '.');
+  }
+
   // rendering
 
   const digitsToRender = digits.map(digit =>
@@ -45,7 +53,7 @@ function App() {
       id={digit.id}
       value={digit.value}
       style = {{gridArea: digit.id}}
-      clickHandler = {handleNumberClick}
+      clickHandler = {handleDigitClick}
       />
   );
   const operatorsToRender = operators.map(operator =>
@@ -73,6 +81,7 @@ function App() {
         id='decimal'
         value='.'
         style={{gridArea: 'decimal'}}
+        clickHandler={handleDecimalClick}
       />
       <Equals
         id='equals'
@@ -81,6 +90,6 @@ function App() {
       />
     </div>
   );
-}
+};
 
 export default App;
