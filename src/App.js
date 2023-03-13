@@ -15,12 +15,28 @@ function App() {
 
   const [display, setDisplay] = useState(() => 0)
 
+  const [calculation, setCalculation] = useState(() => ({
+    operandLeft: 0,
+    operator: null,
+    operandRight: null,
+  }))
+
   // eventHandlers
 
   const handleClearClick = () => {
     setDisplay(0);
   }
 
+  const handleNumberClick = (e) => {    
+    const newInput = e.target.innerText;
+    setDisplay((prevDisplay) => {
+      if (prevDisplay == 0) {
+        return newInput;
+      } else {
+        return prevDisplay + newInput;
+      }
+    });
+  }
   // rendering
 
   const digitsToRender = digits.map(digit =>
@@ -29,6 +45,7 @@ function App() {
       id={digit.id}
       value={digit.value}
       style = {{gridArea: digit.id}}
+      clickHandler = {handleNumberClick}
       />
   );
   const operatorsToRender = operators.map(operator =>
