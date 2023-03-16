@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import Formula from "./components/Formula";
 import Display from "./components/Display";
 import Digit from "./components/Digit";
 import Operator from "./components/Operator";
@@ -31,6 +32,8 @@ function App() {
   };
 
   const [display, setDisplay] = useState(() => '0');
+
+  const [formula, setFormula] = useState(() => '0'.repeat(1));
 
   const [calculation, setCalculation] = useState(() => initialCalculationState);
 
@@ -124,6 +127,9 @@ function App() {
   );
   return (
     <div className="App">
+      <Formula
+        value={formula}
+      />
       <Display
         value={display}
       />
