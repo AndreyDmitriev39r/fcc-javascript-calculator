@@ -8,11 +8,6 @@ import buttons from "./data";
 
 function App() {
 
-  // TODOs
-
-  // fix: display and calculation states connection should be refactored
-    // on clicks => set calculations first, based on that => setDisplay   
-
   // state
 
   const initialCalculationState = {
@@ -67,51 +62,10 @@ function App() {
         setDisplay(prevDisplay => prevDisplay + event.target.innerText);
         setFormula(prevFormula => prevFormula + event.target.innerText);
       }
-    }
-    
+    }    
+  };
 
-    // const newInput = event.target.innerText;
-    // setDisplay((prevDisplay) => {
-    //   if (prevDisplay == 0) {
-    //     return newInput;
-    //   } else {
-    //     return prevDisplay + newInput;
-    //   }
-    // });
-    // setCalculation((prevCalculation) => {
-    //   //case no new operator is chosen yet
-    //   if (!prevCalculation.operator) {        
-    //     return {
-    //       ...prevCalculation,
-    //       operandLeft: !prevCalculation.isDecimalPoint
-    //         ? Number(prevCalculation.operandLeft + newInput)
-    //         : Number(prevCalculation.operandLeft + "." + newInput),
-    //       isDecimalPoint: prevCalculation.isDecimalPoint
-    //         ? !prevCalculation.isDecimalPoint
-    //         : prevCalculation.isDecimalPoint
-    //     } 
-    //   } else {
-    //   //case operator is chosen       
-    //     return {
-    //       ...prevCalculation,
-    //       operandRight: !prevCalculation.isDecimalPoint
-    //         ? Number(Number(prevCalculation.operandRight) + newInput)
-    //         : Number(Number(prevCalculation.operandRight) + "." + newInput),
-    //       isDecimalPoint: prevCalculation.isDecimalPoint
-    //         ? !prevCalculation.isDecimalPoint
-    //         : prevCalculation.isDecimalPoint
-    //     }
-    //   }   
-    // });
-  }
-
-  const handleDecimalClick = (event) => {
-    // if (!display.includes('.')) {
-    //   setDisplay((prevDisplay) => prevDisplay + '.');
-    //   setCalculation((prevCalculation) => {               
-    //       return {...prevCalculation, isDecimalPoint: true}           
-    //   });
-    // }
+  const handleDecimalClick = (event) => {    
     console.log(`${event.target} is clicked`);
   };
 
@@ -123,30 +77,23 @@ function App() {
       setFormula(prevFormula => !calculation.operator ? prevFormula + event.target.innerText : prevFormula.slice(0, -1) + event.target.innerText);
       setIsDecimal(false);
     }   
-    
-    // const currentOperation = event.target.id;
-    // setCalculation((prevCalculation) => {
-    //   // case no right operand is present
-    //   if (!prevCalculation.operandRight) {             
-    //     return {...prevCalculation,
-    //       operator: operatorsLookup[currentOperation],
-    //       isDecimalPoint: false}
-    //   }
-    // })
-  }
+  };
 
   const handleEqualsClick = () => {
+    if (!calculation.operator) return;
+    let result;
     if (calculation.operator && calculation.operandRight) {
-      let {operandLeft, operator, operandRight} =calculation;
-      let result = operator(operandLeft, operandRight);
-      setCalculation({...initialCalculationState, operandLeft: result});
-      setDisplay(result);
-      setFormula(prevFormula => prevFormula + '=' + result);
-      setIsDecimal(false);
-    }  
-    
-    
-  }
+      let {operandLeft, operator, operandRight} = calculation;
+      result = Number(operator(operandLeft, operandRight).toPrecision(4));      
+    } else if (calculation.operator) {
+      let {operandLeft, operator} = calculation;
+      result = Number(operator(operandLeft, operandLeft).toPrecision(4));     
+    }
+    setCalculation({...initialCalculationState, operandLeft: result});
+    setDisplay(result);
+    setFormula(prevFormula => prevFormula + '=' + result);
+    setIsDecimal(false);
+};
 
   // rendering
 
