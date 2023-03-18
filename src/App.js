@@ -38,19 +38,31 @@ function App() {
     setIsDecimal(false);
   };
 
-  const handleDigitClick = (event, value) => {
-    console.log(typeof event.target.innerText);
-    console.log(typeof value);   
+  const handleDigitClick = (event, value) => {      
     if (!calculation.operator) {      
       if (calculation.operandLeft === 0) {
         setCalculation(prevCalculation => ({
           ...prevCalculation, operandLeft: value
-        }))
+        }));
         setDisplay(value);
         setFormula(prevFormula => prevFormula == 0 ? value : prevFormula + value);
       } else {
         setCalculation(prevCalculation => ({
           ...prevCalculation, operandLeft: Number(prevCalculation.operandLeft + event.target.innerText)
+        }));
+        setDisplay(prevDisplay => prevDisplay + event.target.innerText);
+        setFormula(prevFormula => prevFormula + event.target.innerText);
+      }
+    } else {
+      if (calculation.operandRight === 0) {
+        setCalculation(prevCalculation => ({
+          ...prevCalculation, operandRight: value
+        }));
+        setDisplay(value);
+        setFormula(prevFormula => prevFormula + value);
+      } else {
+        setCalculation(prevCalculation => ({
+          ...prevCalculation, operandRight: Number(prevCalculation.operandRight + event.target.innerText)
         }));
         setDisplay(prevDisplay => prevDisplay + event.target.innerText);
         setFormula(prevFormula => prevFormula + event.target.innerText);
@@ -103,8 +115,14 @@ function App() {
     console.log(`${event.target} is clicked`);
   };
 
-  const handleOperatorClick = (event) => {
-    console.log(`${event.target}\n is clicked`)     
+  const handleOperatorClick = (event, value, operation) => {
+    if (!calculation.operandRight)  {
+      setCalculation(prevCalculation => ({
+        ...prevCalculation, operator: operation, operandRight: 0
+      }));
+      setFormula(prevFormula => !calculation.operator ? prevFormula + event.target.innerText : prevFormula.slice(0, -1) + event.target.innerText);
+      setIsDecimal(false);
+    }   
     
     // const currentOperation = event.target.id;
     // setCalculation((prevCalculation) => {
@@ -117,8 +135,17 @@ function App() {
     // })
   }
 
-  const handleEqualsClick = (event) => {
-    console.log(event.target);
+  const handleEqualsClick = () => {
+    if (calculation.operator && calculation.operandRight) {
+      let {operandLeft, operator, operandRight} =calculation;
+      let result = operator(operandLeft, operandRight);
+      setCalculation({...initialCalculationState, operandLeft: result});
+      setDisplay(result);
+      setFormula(prevFormula => prevFormula + '=' + result);
+      setIsDecimal(false);
+    }  
+    
+    
   }
 
   // rendering
