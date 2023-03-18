@@ -18,22 +18,24 @@ function App() {
   const initialCalculationState = {
     operandLeft: 0,
     operator: null,
-    operandRight: null,
-    isDecimalPoint: false,
+    operandRight: null,    
   };
 
   const [display, setDisplay] = useState(() => '0');
 
-  const [formula, setFormula] = useState(() => '0'.repeat(1));
+  const [formula, setFormula] = useState(() => '0');
+
+  const [isDecimal, setIsDecimal] = useState(() => false);
 
   const [calculation, setCalculation] = useState(() => initialCalculationState);
 
   // eventHandlers
 
-  const handleClearClick = (event) => {
-    // setDisplay(0);
-    // setCalculation(initialCalculationState);
-    console.log(`${event.target} is clicked`)
+  const handleClearClick = (event) => {    
+    setDisplay('0');
+    setFormula('0');
+    setCalculation(initialCalculationState);
+    setIsDecimal(false);
   };
 
   const handleDigitClick = (event) => {
@@ -84,7 +86,7 @@ function App() {
   };
 
   const handleOperatorClick = (event) => {
-    console.log(`${event.target} is clicked`)     
+    console.log(`${event.target}\n is clicked`)     
     
     // const currentOperation = event.target.id;
     // setCalculation((prevCalculation) => {
