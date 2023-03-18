@@ -38,8 +38,26 @@ function App() {
     setIsDecimal(false);
   };
 
-  const handleDigitClick = (event) => {
-    console.log(`${event.target} is clicked`)     
+  const handleDigitClick = (event, value) => {
+    console.log(typeof event.target.innerText);
+    console.log(typeof value);   
+    if (!calculation.operator) {      
+      if (calculation.operandLeft === 0) {
+        setCalculation(prevCalculation => ({
+          ...prevCalculation, operandLeft: value
+        }))
+        setDisplay(value);
+        setFormula(prevFormula => prevFormula == 0 ? value : prevFormula + value);
+      } else {
+        setCalculation(prevCalculation => ({
+          ...prevCalculation, operandLeft: Number(prevCalculation.operandLeft + event.target.innerText)
+        }));
+        setDisplay(prevDisplay => prevDisplay + event.target.innerText);
+        setFormula(prevFormula => prevFormula + event.target.innerText);
+      }
+    }
+    
+
     // const newInput = event.target.innerText;
     // setDisplay((prevDisplay) => {
     //   if (prevDisplay == 0) {

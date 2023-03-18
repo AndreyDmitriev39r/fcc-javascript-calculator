@@ -3,7 +3,7 @@ function Button({id, value, operation, style, clickHandler}) {
     <button
       id={id}      
       style={{...style}}
-      onClick={clickHandler}
+      onClick={(event) => clickHandler(event, value)}
     >
       {value}
     </button>
