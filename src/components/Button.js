@@ -1,8 +1,7 @@
-function Digit({id, value, style, clickHandler}) {  
+function Button({id, value, operation, style, clickHandler}) {  
   return (
     <button
-      id={id}
-      className="digit"
+      id={id}      
       style={{...style}}
       onClick={clickHandler}
     >
@@ -11,4 +10,4 @@ function Digit({id, value, style, clickHandler}) {
   );
 }
 
-export default Digit;
+export default Button;

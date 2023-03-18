@@ -2,25 +2,16 @@ import { useState } from "react";
 
 import Formula from "./components/Formula";
 import Display from "./components/Display";
-import Digit from "./components/Digit";
-import Operator from "./components/Operator";
-import Clear from "./components/Clear";
-import Equals from "./components/Equals";
-import DecimalPoint from "./components/DecimalPoint";
+import Button from "./components/Button";
 
-import { digits, operators } from "./data";
+import buttons from "./data";
 
 function App() {
 
   // TODOs
 
-  // add formula component
   // fix: display and calculation states connection should be refactored
-    // on clicks => set calculations first, based on that => setDisplay
-    // as an option - consider useEffect for dispaly with calculation dependency
-
-  const operatorsLookup = {};
-  operators.forEach(operator => operatorsLookup[operator.id] = operator.operation);  
+    // on clicks => set calculations first, based on that => setDisplay   
 
   // state
 
@@ -39,66 +30,71 @@ function App() {
 
   // eventHandlers
 
-  const handleClearClick = () => {
-    setDisplay(0);
-    setCalculation(initialCalculationState);
+  const handleClearClick = (event) => {
+    // setDisplay(0);
+    // setCalculation(initialCalculationState);
+    console.log(`${event.target} is clicked`)
   };
 
-  const handleDigitClick = (event) => {    
-    const newInput = event.target.innerText;
-    setDisplay((prevDisplay) => {
-      if (prevDisplay == 0) {
-        return newInput;
-      } else {
-        return prevDisplay + newInput;
-      }
-    });
-    setCalculation((prevCalculation) => {
-      //case no new operator is chosen yet
-      if (!prevCalculation.operator) {        
-        return {
-          ...prevCalculation,
-          operandLeft: !prevCalculation.isDecimalPoint
-            ? Number(prevCalculation.operandLeft + newInput)
-            : Number(prevCalculation.operandLeft + "." + newInput),
-          isDecimalPoint: prevCalculation.isDecimalPoint
-            ? !prevCalculation.isDecimalPoint
-            : prevCalculation.isDecimalPoint
-        } 
-      } else {
-      //case operator is chosen       
-        return {
-          ...prevCalculation,
-          operandRight: !prevCalculation.isDecimalPoint
-            ? Number(Number(prevCalculation.operandRight) + newInput)
-            : Number(Number(prevCalculation.operandRight) + "." + newInput),
-          isDecimalPoint: prevCalculation.isDecimalPoint
-            ? !prevCalculation.isDecimalPoint
-            : prevCalculation.isDecimalPoint
-        }
-      }   
-    });
+  const handleDigitClick = (event) => {
+    console.log(`${event.target} is clicked`)     
+    // const newInput = event.target.innerText;
+    // setDisplay((prevDisplay) => {
+    //   if (prevDisplay == 0) {
+    //     return newInput;
+    //   } else {
+    //     return prevDisplay + newInput;
+    //   }
+    // });
+    // setCalculation((prevCalculation) => {
+    //   //case no new operator is chosen yet
+    //   if (!prevCalculation.operator) {        
+    //     return {
+    //       ...prevCalculation,
+    //       operandLeft: !prevCalculation.isDecimalPoint
+    //         ? Number(prevCalculation.operandLeft + newInput)
+    //         : Number(prevCalculation.operandLeft + "." + newInput),
+    //       isDecimalPoint: prevCalculation.isDecimalPoint
+    //         ? !prevCalculation.isDecimalPoint
+    //         : prevCalculation.isDecimalPoint
+    //     } 
+    //   } else {
+    //   //case operator is chosen       
+    //     return {
+    //       ...prevCalculation,
+    //       operandRight: !prevCalculation.isDecimalPoint
+    //         ? Number(Number(prevCalculation.operandRight) + newInput)
+    //         : Number(Number(prevCalculation.operandRight) + "." + newInput),
+    //       isDecimalPoint: prevCalculation.isDecimalPoint
+    //         ? !prevCalculation.isDecimalPoint
+    //         : prevCalculation.isDecimalPoint
+    //     }
+    //   }   
+    // });
   }
 
-  const handleDecimalClick = () => {
-    if (!display.includes('.')) {
-      setDisplay((prevDisplay) => prevDisplay + '.');
-      setCalculation((prevCalculation) => {               
-          return {...prevCalculation, isDecimalPoint: true}           
-      });
-    }   
+  const handleDecimalClick = (event) => {
+    // if (!display.includes('.')) {
+    //   setDisplay((prevDisplay) => prevDisplay + '.');
+    //   setCalculation((prevCalculation) => {               
+    //       return {...prevCalculation, isDecimalPoint: true}           
+    //   });
+    // }
+    console.log(`${event.target} is clicked`);
   };
 
   const handleOperatorClick = (event) => {
-    const currentOperation = event.target.id;
-    setCalculation((prevCalculation) => {
-      // case no right operand is present
-      if (!prevCalculation.operandRight) {             
-        return {...prevCalculation,
-          operator: operatorsLookup[currentOperation],
-          isDecimalPoint: false}
-      }
-    })
+    console.log(`${event.target} is clicked`)     
+    
+    // const currentOperation = event.target.id;
+    // setCalculation((prevCalculation) => {
+    //   // case no right operand is present
+    //   if (!prevCalculation.operandRight) {             
+    //     return {...prevCalculation,
+    //       operator: operatorsLookup[currentOperation],
+    //       isDecimalPoint: false}
+    //   }
+    // })
   }
 
   const handleEqualsClick = (event) => {
@@ -107,24 +103,23 @@ function App() {
 
   // rendering
 
-  const digitsToRender = digits.map(digit =>
-    <Digit
-      key={digit.id}
-      id={digit.id}
-      value={digit.value}
-      style = {{gridArea: digit.id}}
-      clickHandler = {handleDigitClick}
-      />
-  );
-  const operatorsToRender = operators.map(operator =>
-    <Operator
-      key={operator.id}
-      id={operator.id}
-      value={operator.value}
-      style = {{gridArea: operator.id}}
-      clickHandler = {handleOperatorClick}
+  const buttonsToRender = buttons.map(button =>
+    <Button
+      key={button.id}
+      id={button.id}
+      value={button.value}
+      operation={button.operation}
+      clickHandler={
+        button.operation ? handleOperatorClick
+          : button.id === 'clear' ? handleClearClick
+          : button.id === 'equals' ? handleEqualsClick
+          : button.id === 'decimal' ? handleDecimalClick
+          : handleDigitClick
+      }
+      style={{gridArea: button.id}}
     />
-  );
+    )
+  
   return (
     <div className="App">
       <Formula
@@ -133,26 +128,7 @@ function App() {
       <Display
         value={display}
       />
-      {digitsToRender}
-      {operatorsToRender}
-      <Clear
-        id='clear'
-        value='C'
-        style={{gridArea: 'clear'}}
-        clickHandler={handleClearClick}
-      />
-      <DecimalPoint
-        id='decimal'
-        value='.'
-        style={{gridArea: 'decimal'}}
-        clickHandler={handleDecimalClick}
-      />
-      <Equals
-        id='equals'
-        value='='
-        style={{gridArea: 'equals'}}
-        clickHandler={handleEqualsClick}
-      />
+      {buttonsToRender}      
     </div>
   );
 };
