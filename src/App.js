@@ -9,8 +9,15 @@ import buttons from "./data";
 function App() {
 
   // TODOs
-    // refactor handledigitclick
-      // use dynamic object keys to choose operand left or operand right for updating
+    // primary
+      // analyze digit handler, it can be dried more via adding variables
+      // think through logic for handling decimal point
+      // think through '-' operator edge case
+    // secondary
+      // make formula to have fixed length
+      // think through possibility of putting equals functionality in the same function as operator's functionality
+      // consider utility for result calculation
+      // readability: some long lines should be splitted
 
   // state
 
@@ -18,7 +25,8 @@ function App() {
     operandLeft: 0,
     operator: null,
     operandRight: null,
-    lastPressedDecimal: false, 
+    isLastPressedDecimal: false,
+    isRightOperandNegative: false,
   };
 
   const [display, setDisplay] = useState(() => '0');
@@ -35,7 +43,7 @@ function App() {
     setDisplay('0');
     setFormula('0');
     setCalculation(initialCalculationState);
-    setIsDecimal(false);
+    setIsDecimal(false);    
   };
 
   const handleDigitClick = (event, value) => {
