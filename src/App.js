@@ -8,6 +8,10 @@ import buttons from "./data";
 
 function App() {
 
+  // TODOs
+    // refactor handledigitclick
+      // use dynamic object keys to choose operand left or operand right for updating
+
   // state
 
   const initialCalculationState = {
@@ -34,36 +38,23 @@ function App() {
     setIsDecimal(false);
   };
 
-  const handleDigitClick = (event, value) => {      
-    if (!calculation.operator) {      
-      if (calculation.operandLeft === 0) {
-        setCalculation(prevCalculation => ({
-          ...prevCalculation, operandLeft: value
-        }));
-        setDisplay(value);
-        setFormula(prevFormula => prevFormula == 0 ? value : prevFormula + value);
-      } else {
-        setCalculation(prevCalculation => ({
-          ...prevCalculation, operandLeft: Number(prevCalculation.operandLeft + event.target.innerText)
-        }));
-        setDisplay(prevDisplay => prevDisplay + event.target.innerText);
-        setFormula(prevFormula => prevFormula + event.target.innerText);
-      }
+  const handleDigitClick = (event, value) => {
+    const operandToUpdate = !calculation.operator ? 'operandLeft'
+      : 'operandRight';
+          
+    if (calculation[operandToUpdate] === 0) {
+      setCalculation(prevCalculation => ({
+        ...prevCalculation, [operandToUpdate]: value
+      }));
+      setDisplay(value);
+      setFormula(prevFormula => prevFormula == 0 ? value : prevFormula + value);
     } else {
-      if (calculation.operandRight === 0) {
-        setCalculation(prevCalculation => ({
-          ...prevCalculation, operandRight: value
-        }));
-        setDisplay(value);
-        setFormula(prevFormula => prevFormula + value);
-      } else {
-        setCalculation(prevCalculation => ({
-          ...prevCalculation, operandRight: Number(prevCalculation.operandRight + event.target.innerText)
-        }));
-        setDisplay(prevDisplay => prevDisplay + event.target.innerText);
-        setFormula(prevFormula => prevFormula + event.target.innerText);
-      }
-    }    
+      setCalculation(prevCalculation => ({
+        ...prevCalculation, [operandToUpdate]: Number(prevCalculation[operandToUpdate] + event.target.innerText)
+      }));
+      setDisplay(prevDisplay => prevDisplay + event.target.innerText);
+      setFormula(prevFormula => prevFormula + event.target.innerText);
+    }
   };
 
   const handleDecimalClick = (event) => {    
