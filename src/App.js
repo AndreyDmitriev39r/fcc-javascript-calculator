@@ -70,13 +70,23 @@ function App() {
   };
 
   const handleOperatorClick = (event, value, operation) => {
+    let result;
     if (!calculation.operandRight)  {
       setCalculation(prevCalculation => ({
         ...prevCalculation, operator: operation, operandRight: 0
       }));
       setFormula(prevFormula => !calculation.operator ? prevFormula + event.target.innerText : prevFormula.slice(0, -1) + event.target.innerText);
       setIsDecimal(false);
-    }   
+    } else {
+      let {operandLeft, operator, operandRight} = calculation;
+      result = Number(operator(operandLeft, operandRight).toPrecision(4));  
+      setCalculation(prevCalculation => ({
+        ...initialCalculationState, operandLeft: result, operator: operation, operandRight: 0
+      }));
+      setFormula(prevFormula => prevFormula + '=' + result + event.target.innerText);
+      setDisplay(result);
+      setIsDecimal(false);
+    }
   };
 
   const handleEqualsClick = () => {
