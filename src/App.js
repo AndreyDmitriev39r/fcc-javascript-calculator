@@ -83,9 +83,7 @@ function App() {
     } else {
       let {operandLeft, operator, operandRight} = calculation;
       result = Number(operator(operandLeft, operandRight).toPrecision(4));  
-      setCalculation(prevCalculation => ({
-        ...initialCalculationState, operandLeft: result, operator: operation, operandRight: 0
-      }));
+      setCalculation({...initialCalculationState, operandLeft: result, operator: operation, operandRight: 0});
       setFormula(prevFormula => prevFormula + '=' + result + event.target.innerText);
       setDisplay(result);
       setIsDecimal(false);
