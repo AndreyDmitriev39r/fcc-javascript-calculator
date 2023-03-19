@@ -13,7 +13,8 @@ function App() {
   const initialCalculationState = {
     operandLeft: 0,
     operator: null,
-    operandRight: null,    
+    operandRight: null,
+    lastPressedDecimal: false, 
   };
 
   const [display, setDisplay] = useState(() => '0');
@@ -66,7 +67,9 @@ function App() {
   };
 
   const handleDecimalClick = (event) => {    
-    console.log(`${event.target} is clicked`);
+    if (isDecimal) return;
+    setDisplay(prevDisplay => prevDisplay + '.')
+    setIsDecimal(true);
   };
 
   const handleOperatorClick = (event, value, operation) => {
@@ -103,7 +106,7 @@ function App() {
     setDisplay(result);
     setFormula(prevFormula => prevFormula + '=' + result);
     setIsDecimal(false);
-};
+  };
 
   // rendering
 
@@ -122,16 +125,12 @@ function App() {
       }
       style={{gridArea: button.id}}
     />
-    )
+  );
   
   return (
     <div className="App">
-      <Formula
-        value={formula}
-      />
-      <Display
-        value={display}
-      />
+      <Formula value={formula} />
+      <Display value={display} />
       {buttonsToRender}      
     </div>
   );
