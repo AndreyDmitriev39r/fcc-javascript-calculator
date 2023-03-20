@@ -8,9 +8,7 @@ import buttons from "./data";
 
 function App() {
 
-  // TODOs
-    // primary
-      // implement functionality for decimal numbers 
+  // TODOs    
     // secondary
       // make formula to have fixed length
       // think through possibility of putting equals functionality in the same function as operator's functionality
@@ -21,8 +19,7 @@ function App() {
   const initialCalculationState = {
     operandLeft: 0,
     operator: null,
-    operandRight: null,
-    isLastPressedDecimal: false,
+    operandRight: null,    
     isRightOperandNegative: false,
   };
 
@@ -48,13 +45,23 @@ function App() {
       ? [value, false]
       : [event.target.innerText, true];
     newValue = calculation.isRightOperandNegative ? -newValue : value;
-    setCalculation(prevCalculation => ({
-      ...prevCalculation,
-      [operandToUpdate]: !updateOrder
-        ? newValue
-        : Number(prevCalculation[operandToUpdate] + newValue),
-      isRightOperandNegative: false,
-    }));
+    if (display[display.length - 1] === '.') {
+      setCalculation(prevCalculation => ({
+        ...prevCalculation,
+        [operandToUpdate]: !updateOrder
+          ? Number('0.' + newValue)
+          : Number(prevCalculation[operandToUpdate] + "." + newValue),
+        isRightOperandNegative: false,
+      }));
+    } else {
+      setCalculation(prevCalculation => ({
+        ...prevCalculation,
+        [operandToUpdate]: !updateOrder
+          ? newValue
+          : Number(String(prevCalculation[operandToUpdate]) + String(newValue)),
+        isRightOperandNegative: false,
+      }));
+    }    
     setDisplay(prevDisplay => !updateOrder ? String(newValue) : String(prevDisplay + newValue));
     setFormula(prevFormula => {
       if (!updateOrder) {
@@ -66,7 +73,10 @@ function App() {
   };
 
   const handleDecimalClick = (event) => {
-    console.log(event.target);
+    const operandToUpdate = !calculation.operator
+      ? 'operandLeft'
+      : 'operandRight';
+    setDisplay(prevDisplay => prevDisplay.includes('.') ? prevDisplay : prevDisplay + '.');
   };
 
   const handleOperatorClick = (event, value, operation) => {
