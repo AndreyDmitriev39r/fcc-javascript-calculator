@@ -8,10 +8,7 @@ import buttons from "./data";
 
 function App() {
 
-  // TODOs
-    // primary      
-      // think through logic for handling decimal point
-      // think through '-' operator edge case
+  // TODOs    
     // secondary
       // make formula to have fixed length
       // think through possibility of putting equals functionality in the same function as operator's functionality
@@ -30,9 +27,7 @@ function App() {
 
   const [display, setDisplay] = useState(() => '0');
 
-  const [formula, setFormula] = useState(() => '0');
-
-  const [isDecimal, setIsDecimal] = useState(() => false);
+  const [formula, setFormula] = useState(() => '0');  
 
   const [calculation, setCalculation] = useState(() => initialCalculationState);
 
@@ -41,24 +36,25 @@ function App() {
   const handleClearClick = (event) => {    
     setDisplay('0');
     setFormula('0');
-    setCalculation(initialCalculationState);
-    setIsDecimal(false);    
+    setCalculation(initialCalculationState);    
   };
 
   const handleDigitClick = (event, value) => {
     const operandToUpdate = !calculation.operator
       ? 'operandLeft'
       : 'operandRight';
-    const [newValue , updateOrder] = calculation[operandToUpdate] === 0
+    let [newValue , updateOrder] = calculation[operandToUpdate] === 0
       ? [value, false]
       : [event.target.innerText, true];
+    newValue = calculation.isRightOperandNegative ? -newValue : value;
     setCalculation(prevCalculation => ({
       ...prevCalculation,
       [operandToUpdate]: !updateOrder
         ? newValue
-        : Number(prevCalculation[operandToUpdate] + newValue)
+        : Number(prevCalculation[operandToUpdate] + newValue),
+      isRightOperandNegative: false,
     }));
-    setDisplay(prevDisplay => !updateOrder ? newValue : prevDisplay + newValue);
+    setDisplay(prevDisplay => !updateOrder ? String(newValue) : String(prevDisplay + newValue));
     setFormula(prevFormula => {
       if (!updateOrder) {
         return prevFormula == 0 ? value : prevFormula + value;
@@ -68,27 +64,29 @@ function App() {
     });
   };
 
-  const handleDecimalClick = (event) => {    
-    if (isDecimal) return;
-    setDisplay(prevDisplay => prevDisplay + '.')
-    setIsDecimal(true);
+  const handleDecimalClick = (event) => {
+    console.log(event.target);
   };
 
   const handleOperatorClick = (event, value, operation) => {
     let result;
+    
     if (!calculation.operandRight)  {
+      // case '-' clicked after operator
+      if (calculation.operator && event.target.id === 'subtract') {
+        setCalculation(prevCalculation => ({...prevCalculation, isRightOperandNegative: true}));        
+        return;
+      }
       setCalculation(prevCalculation => ({
-        ...prevCalculation, operator: operation, operandRight: 0
+        ...prevCalculation, operator: operation, operandRight: 0, isRightOperandNegative: false,
       }));
-      setFormula(prevFormula => !calculation.operator ? prevFormula + event.target.innerText : prevFormula.slice(0, -1) + event.target.innerText);
-      setIsDecimal(false);
-    } else {
+      setFormula(prevFormula => !calculation.operator ? prevFormula + event.target.innerText : prevFormula.slice(0, -1) + event.target.innerText);    
+    } else {     
       let {operandLeft, operator, operandRight} = calculation;
       result = Number(operator(operandLeft, operandRight).toPrecision(4));  
       setCalculation({...initialCalculationState, operandLeft: result, operator: operation, operandRight: 0});
       setFormula(prevFormula => prevFormula + '=' + result + event.target.innerText);
-      setDisplay(result);
-      setIsDecimal(false);
+      setDisplay(result);      
     }
   };
 
@@ -104,8 +102,7 @@ function App() {
     }
     setCalculation({...initialCalculationState, operandLeft: result});
     setDisplay(result);
-    setFormula(prevFormula => prevFormula + '=' + result);
-    setIsDecimal(false);
+    setFormula(prevFormula => prevFormula + '=' + result);    
   };
 
   // rendering
