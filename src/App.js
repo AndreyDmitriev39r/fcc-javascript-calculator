@@ -8,7 +8,9 @@ import buttons from "./data";
 
 function App() {
 
-  // TODOs    
+  // TODOs
+    // primary
+      // implement functionality for decimal numbers 
     // secondary
       // make formula to have fixed length
       // think through possibility of putting equals functionality in the same function as operator's functionality
