@@ -12,8 +12,7 @@ function App() {
     // secondary
       // make formula to have fixed length
       // think through possibility of putting equals functionality in the same function as operator's functionality
-      // consider utility for result calculation
-      // readability: some long lines should be splitted
+      // consider utility for result calculation  
 
   // state
 
@@ -36,7 +35,7 @@ function App() {
   const handleClearClick = (event) => {    
     setDisplay('0');
     setFormula('0');
-    setCalculation(initialCalculationState);    
+    setCalculation(initialCalculationState);
   };
 
   const handleDigitClick = (event, value) => {
@@ -57,7 +56,7 @@ function App() {
     setDisplay(prevDisplay => !updateOrder ? String(newValue) : String(prevDisplay + newValue));
     setFormula(prevFormula => {
       if (!updateOrder) {
-        return prevFormula == 0 ? value : prevFormula + value;
+        return prevFormula == 0 ? String(value) : String(prevFormula + value);
       } else {
         return prevFormula + newValue;
       }
@@ -71,20 +70,29 @@ function App() {
   const handleOperatorClick = (event, value, operation) => {
     let result;
     
-    if (!calculation.operandRight)  {
-      // case '-' clicked after operator
+    if (!calculation.operandRight)  {      
       if (calculation.operator && event.target.id === 'subtract') {
         setCalculation(prevCalculation => ({...prevCalculation, isRightOperandNegative: true}));        
         return;
       }
       setCalculation(prevCalculation => ({
-        ...prevCalculation, operator: operation, operandRight: 0, isRightOperandNegative: false,
+        ...prevCalculation,
+        operator: operation,
+        operandRight: 0,
+        isRightOperandNegative: false,
       }));
-      setFormula(prevFormula => !calculation.operator ? prevFormula + event.target.innerText : prevFormula.slice(0, -1) + event.target.innerText);    
+      setFormula(prevFormula => !calculation.operator
+        ? prevFormula + event.target.innerText
+        : prevFormula.slice(0, -1) + event.target.innerText
+      );    
     } else {     
       let {operandLeft, operator, operandRight} = calculation;
       result = Number(operator(operandLeft, operandRight).toPrecision(4));  
-      setCalculation({...initialCalculationState, operandLeft: result, operator: operation, operandRight: 0});
+      setCalculation({
+        ...initialCalculationState,
+        operandLeft: result,
+        operator: operation,
+        operandRight: 0});
       setFormula(prevFormula => prevFormula + '=' + result + event.target.innerText);
       setDisplay(result);      
     }
