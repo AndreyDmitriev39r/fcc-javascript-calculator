@@ -9,8 +9,7 @@ import buttons from "./data";
 function App() {
 
   // TODOs
-    // primary
-      // analyze digit handler, it can be dried more via adding variables
+    // primary      
       // think through logic for handling decimal point
       // think through '-' operator edge case
     // secondary
@@ -47,22 +46,26 @@ function App() {
   };
 
   const handleDigitClick = (event, value) => {
-    const operandToUpdate = !calculation.operator ? 'operandLeft'
+    const operandToUpdate = !calculation.operator
+      ? 'operandLeft'
       : 'operandRight';
-          
-    if (calculation[operandToUpdate] === 0) {
-      setCalculation(prevCalculation => ({
-        ...prevCalculation, [operandToUpdate]: value
-      }));
-      setDisplay(value);
-      setFormula(prevFormula => prevFormula == 0 ? value : prevFormula + value);
-    } else {
-      setCalculation(prevCalculation => ({
-        ...prevCalculation, [operandToUpdate]: Number(prevCalculation[operandToUpdate] + event.target.innerText)
-      }));
-      setDisplay(prevDisplay => prevDisplay + event.target.innerText);
-      setFormula(prevFormula => prevFormula + event.target.innerText);
-    }
+    const [newValue , updateOrder] = calculation[operandToUpdate] === 0
+      ? [value, false]
+      : [event.target.innerText, true];
+    setCalculation(prevCalculation => ({
+      ...prevCalculation,
+      [operandToUpdate]: !updateOrder
+        ? newValue
+        : Number(prevCalculation[operandToUpdate] + newValue)
+    }));
+    setDisplay(prevDisplay => !updateOrder ? newValue : prevDisplay + newValue);
+    setFormula(prevFormula => {
+      if (!updateOrder) {
+        return prevFormula == 0 ? value : prevFormula + value;
+      } else {
+        return prevFormula + newValue;
+      }
+    });
   };
 
   const handleDecimalClick = (event) => {    
